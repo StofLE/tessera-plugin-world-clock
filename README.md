@@ -31,3 +31,4 @@ AM/PM format.
 - `components/world_clock/zones.h`: each place's offset and daylight saving rules, written by `tools/make_zones.py`
   from the tzdata rules. Run it again when a country changes its rules.
 - `translations/`: the words on the screen (`screen`) and in the app (`app`), the cities' names among them.
+- `CHANGELOG.md`: what each version changed; the app shows it with an update.

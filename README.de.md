@@ -32,3 +32,4 @@ wo sie die Uhr nichts kostet. Eine Spalte, die für ein Zifferblatt zu schmal is
 - `components/world_clock/zones.h`: Abweichung und Sommerzeit-Regeln jedes Orts, geschrieben von
   `tools/make_zones.py` aus den tzdata-Regeln. Neu ausführen, wenn ein Land seine Regeln ändert.
 - `translations/`: die Worte auf dem Bildschirm (`screen`) und in der App (`app`), darunter die Namen der Städte.
+- `CHANGELOG.md`: was jede Version geändert hat; die App zeigt es bei einem Update.
