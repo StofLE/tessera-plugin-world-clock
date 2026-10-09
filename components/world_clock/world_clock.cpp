@@ -83,7 +83,7 @@ static std::string name_key(const std::string &id) {
 //
 // Each place is a column: its name, its clock (a dial as Tessera's own analog clock draws it, or the time in digits)
 // and how far it is from the screen's time. The clock takes the largest size the column leaves; the offset line goes
-// first where there is no room for it. A column too narrow for a dial shows digits.
+// where it would cost the clock, and the offset then follows the name. A column too small for a dial shows digits.
 
 class ClocksTile : public tessera::Tile {
  public:
@@ -142,7 +142,10 @@ class ClocksTile : public tessera::Tile {
         // is this place's.
         ui::set_text(p.time, tessera::clock_text(static_cast<uint32_t>(static_cast<int64_t>(epoch) + offset - here)));
       }
-      if (p.offset) ui::set_text(p.offset, offset_text(epoch, offset, here, static_cast<int32_t>(wall / 86400) - today));
+      const std::string away = offset_text(epoch, offset, here, static_cast<int32_t>(wall / 86400) - today);
+      if (p.offset) ui::set_text(p.offset, away);
+      // No line for it: the offset after the name, as the departures plugin writes a delay after where a bus goes.
+      else ui::set_text(p.name_label, offset == here ? p.name : p.name + "  " + away);
     }
   }
 
@@ -236,7 +239,8 @@ class ClocksTile : public tessera::Tile {
     const int name_h = ui::line_height(Font::BODY), line_gap = ui::px(large ? 6 : 3);
     // The offset line stays where the clock keeps its size without it, as the departures plugin keeps its later times.
     const int room_with = height_ - 2 * (name_h + line_gap), room_without = height_ - name_h - line_gap;
-    const bool dials = analog_ && std::min(column, room_with) >= ui::mm(12);
+    // A dial where it has 10 mm without the offset line; the offset then follows the place's name instead.
+    const bool dials = analog_ && std::min(column, room_without) >= ui::mm(10);
     Font face = Font::BODY;
     bool with_offset = true;
     if (dials) {

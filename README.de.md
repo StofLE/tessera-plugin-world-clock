@@ -6,7 +6,7 @@ entfernt ist („-6 h“, „Morgen · +8 h“). Der Bildschirm rechnet die Zeit
 Entität, kein Internetdienst.
 
 Die Orte stehen nebeneinander. Jede Uhr bekommt die größte Größe, die ihre Spalte lässt; die Zeile darunter bleibt nur,
-wo sie die Uhr nichts kostet. Eine Spalte, die für ein Zifferblatt zu schmal ist, zeigt die Zeit in Ziffern, im
+wo sie die Uhr nichts kostet, sonst steht die Abweichung hinter dem Namen des Orts („New York  -6 h“). Eine Spalte, die für ein Zifferblatt zu schmal ist, zeigt die Zeit in Ziffern, im
 24-Stunden- oder AM/PM-Format des Bildschirms.
 
 ## Einrichten

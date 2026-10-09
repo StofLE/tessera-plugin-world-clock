@@ -5,7 +5,7 @@ digits. Each place has its name above its clock and how far it is from the scree
 "Tomorrow · +8 h"). The screen works the time out itself, daylight saving included: no entity, no internet service.
 
 The places stand side by side. Each clock takes the largest size its column leaves; the line under it stays only where
-it costs the clock nothing. A column too narrow for a dial shows the time in digits, in the screen's own 24-hour or
+it costs the clock nothing, else the offset follows the place's name ("New York  -6 h"). A column too narrow for a dial shows the time in digits, in the screen's own 24-hour or
 AM/PM format.
 
 ## Set up

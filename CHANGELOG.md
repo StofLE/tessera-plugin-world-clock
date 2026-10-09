@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.2 - 2026-10-09
+- Clock faces on tiles one row high too: the offset then follows the place's name (New York  -6 h).
+
 ## 0.1.1 - 2026-10-09
 - The offset says -6 h with a plain minus: the screen's fonts have no other.
 

@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.1.2 - 2026-10-09
+- Zifferblätter auch auf Tiles, die eine Zeile hoch sind: die Abweichung steht dann hinter dem Namen des Orts (New York  -6 h).
+
 ## 0.1.1 - 2026-10-09
 - Die Abweichung schreibt -6 h mit einem einfachen Minus: die Schriften des Bildschirms haben kein anderes.
 
