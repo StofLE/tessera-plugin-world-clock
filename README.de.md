@@ -2,7 +2,7 @@
 
 Die Uhrzeit an bis zu drei Orten der Welt auf einem Tile: als Zifferblätter, gezeichnet wie Tesseras eigene
 Analoguhr, oder in Ziffern. Über jeder Uhr steht der Name des Orts, darunter, wie weit er von der Zeit des Bildschirms
-entfernt ist („−6 h“, „Morgen · +8 h“). Der Bildschirm rechnet die Zeit selbst aus, Sommerzeit eingeschlossen: keine
+entfernt ist („-6 h“, „Morgen · +8 h“). Der Bildschirm rechnet die Zeit selbst aus, Sommerzeit eingeschlossen: keine
 Entität, kein Internetdienst.
 
 Die Orte stehen nebeneinander. Jede Uhr bekommt die größte Größe, die ihre Spalte lässt; die Zeile darunter bleibt nur,

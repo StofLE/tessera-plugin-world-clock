@@ -177,7 +177,7 @@ class ClocksTile : public tessera::Tile {
     lv_point_precise_t mark_points[12][2]{}, hour_points[2]{}, minute_points[2]{}, second_points[2]{};
   };
 
-  // "−6 h", "+5:30 h", "Tomorrow · +8 h"; for the screen's own place its date.
+  // "-6 h", "+5:30 h", "Tomorrow · +8 h"; for the screen's own place its date.
   std::string offset_text(uint32_t epoch, int32_t offset, int32_t here, int32_t days) const {
     const int32_t diff = offset - here;
     std::string text;
@@ -186,8 +186,8 @@ class ClocksTile : public tessera::Tile {
     } else {
       const int minutes = static_cast<int>(std::abs(diff) / 60);
       char n[16];
-      if (minutes % 60) snprintf(n, sizeof n, "%s%d:%02d", diff < 0 ? "−" : "+", minutes / 60, minutes % 60);
-      else snprintf(n, sizeof n, "%s%d", diff < 0 ? "−" : "+", minutes / 60);
+      if (minutes % 60) snprintf(n, sizeof n, "%s%d:%02d", diff < 0 ? "-" : "+", minutes / 60, minutes % 60);
+      else snprintf(n, sizeof n, "%s%d", diff < 0 ? "-" : "+", minutes / 60);
       text = tessera::fill(plugin_->text("offset"), "n", n);
     }
     if (days > 0) return std::string(plugin_->text("tomorrow")) + " · " + text;

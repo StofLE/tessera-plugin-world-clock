@@ -1,7 +1,7 @@
 # World clock
 
 The time in up to three places of the world on one tile: as clock faces drawn like Tessera's own analog clock, or in
-digits. Each place has its name above its clock and how far it is from the screen's time below it ("−6 h",
+digits. Each place has its name above its clock and how far it is from the screen's time below it ("-6 h",
 "Tomorrow · +8 h"). The screen works the time out itself, daylight saving included: no entity, no internet service.
 
 The places stand side by side. Each clock takes the largest size its column leaves; the line under it stays only where
