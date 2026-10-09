@@ -1,0 +1,92 @@
+# World clock: the time in three places of the world on one tile, as clock faces like Tessera's own analog clock or in
+# digits. The screen works each place's time out itself from the zone's rules (components/world_clock/zones.h, written
+# by tools/make_zones.py from tzdata), daylight saving included: no data, no network, no entity.
+id: world_clock
+version: 0.1.0
+api: "0.1"
+icon: clock-outline
+maintainer: StofLE
+license: MIT
+stage: beta
+topics: [time]
+requires:
+  esphome: 2026.6.2
+boards: any
+flash_kb: 12
+
+tiles:
+  - id: clocks
+    name: tile_name
+    icon: clock-outline
+    sizes: { min: 1x1, max: 4x2 }
+    # Three dials of twelve marks, three hands and a centre dot each, and three names, times and offsets.
+    memory: 6400
+    example: tile_example
+    options:
+      - id: zone_1
+        kind: choice
+        label: zone_1
+        hint: zone_hint
+        default: America/New_York
+        choices: &zones
+        - { value: none, label: none }
+        - { value: local, label: z_local }
+        - { value: Pacific/Honolulu, label: z_pacific_honolulu }
+        - { value: America/Anchorage, label: z_america_anchorage }
+        - { value: America/Los_Angeles, label: z_america_los_angeles }
+        - { value: America/Denver, label: z_america_denver }
+        - { value: America/Chicago, label: z_america_chicago }
+        - { value: America/Mexico_City, label: z_america_mexico_city }
+        - { value: America/New_York, label: z_america_new_york }
+        - { value: America/Toronto, label: z_america_toronto }
+        - { value: America/Bogota, label: z_america_bogota }
+        - { value: America/Lima, label: z_america_lima }
+        - { value: America/Santiago, label: z_america_santiago }
+        - { value: America/Sao_Paulo, label: z_america_sao_paulo }
+        - { value: America/Argentina/Buenos_Aires, label: z_america_argentina_buenos_aires }
+        - { value: Atlantic/Reykjavik, label: z_atlantic_reykjavik }
+        - { value: Europe/London, label: z_europe_london }
+        - { value: Europe/Dublin, label: z_europe_dublin }
+        - { value: Europe/Lisbon, label: z_europe_lisbon }
+        - { value: Europe/Madrid, label: z_europe_madrid }
+        - { value: Europe/Paris, label: z_europe_paris }
+        - { value: Europe/Amsterdam, label: z_europe_amsterdam }
+        - { value: Europe/Berlin, label: z_europe_berlin }
+        - { value: Europe/Zurich, label: z_europe_zurich }
+        - { value: Europe/Rome, label: z_europe_rome }
+        - { value: Europe/Vienna, label: z_europe_vienna }
+        - { value: Europe/Stockholm, label: z_europe_stockholm }
+        - { value: Europe/Warsaw, label: z_europe_warsaw }
+        - { value: Europe/Athens, label: z_europe_athens }
+        - { value: Europe/Helsinki, label: z_europe_helsinki }
+        - { value: Europe/Istanbul, label: z_europe_istanbul }
+        - { value: Europe/Moscow, label: z_europe_moscow }
+        - { value: Africa/Cairo, label: z_africa_cairo }
+        - { value: Africa/Lagos, label: z_africa_lagos }
+        - { value: Africa/Johannesburg, label: z_africa_johannesburg }
+        - { value: Africa/Nairobi, label: z_africa_nairobi }
+        - { value: Asia/Dubai, label: z_asia_dubai }
+        - { value: Asia/Karachi, label: z_asia_karachi }
+        - { value: Asia/Kolkata, label: z_asia_kolkata }
+        - { value: Asia/Bangkok, label: z_asia_bangkok }
+        - { value: Asia/Singapore, label: z_asia_singapore }
+        - { value: Asia/Shanghai, label: z_asia_shanghai }
+        - { value: Asia/Hong_Kong, label: z_asia_hong_kong }
+        - { value: Asia/Seoul, label: z_asia_seoul }
+        - { value: Asia/Tokyo, label: z_asia_tokyo }
+        - { value: Australia/Perth, label: z_australia_perth }
+        - { value: Australia/Sydney, label: z_australia_sydney }
+        - { value: Pacific/Auckland, label: z_pacific_auckland }
+      - { id: zone_2, kind: choice, label: zone_2, hint: zone_hint, default: local, choices: *zones }
+      - { id: zone_3, kind: choice, label: zone_3, hint: zone_hint, default: Europe/London, choices: *zones }
+      - { id: name_1, kind: text, label: name_1, hint: name_hint }
+      - { id: name_2, kind: text, label: name_2, hint: name_hint }
+      - { id: name_3, kind: text, label: name_3, hint: name_hint }
+      - id: face
+        kind: choice
+        label: face
+        default: analog
+        choices:
+          - { value: analog, label: face_analog }
+          - { value: digital, label: face_digital }
+      - { id: seconds, kind: toggle, label: seconds, default: true }
