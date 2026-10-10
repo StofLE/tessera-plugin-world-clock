@@ -70,7 +70,7 @@
     "name_3": "Name des dritten Orts",
     "name_hint": "Leer lassen für den Namen der Stadt.",
     "face": "Darstellung",
-    "face_analog": "Zifferblätter",
+    "face_analog": "Zifferblätter, nach Größe",
     "face_digital": "Ziffern",
     "seconds": "Sekundenzeiger",
     "none": "Keiner",
@@ -120,6 +120,9 @@
     "z_asia_tokyo": "Tokio",
     "z_australia_perth": "Perth",
     "z_australia_sydney": "Sydney",
-    "z_pacific_auckland": "Auckland"
+    "z_pacific_auckland": "Auckland",
+    "face_classic": "Klassische Zifferblätter",
+    "face_calm": "Ruhige Zifferblätter",
+    "face_hint": "Nach Größe: ruhige Zifferblätter bei kleinen Uhren, klassische mit Strichen und Ziffern bei großen."
   }
 }

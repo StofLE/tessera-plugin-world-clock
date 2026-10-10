@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0 - 2026-10-10
+- Calm clock faces, as Tessera's own: a filled disc with four strokes and eight dots that reads at any size.
+- Face chosen by size by default (calm on small dials, classic on large ones), or always Classic, Calm or Digits.
+
 ## 0.1.2 - 2026-10-09
 - Clock faces on tiles one row high too: the offset then follows the place's name (New York  -6 h).
 

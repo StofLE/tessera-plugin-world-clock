@@ -1,7 +1,7 @@
 # Weltzeituhr
 
 Die Uhrzeit an bis zu drei Orten der Welt auf einem Tile: als Zifferblätter, gezeichnet wie Tesseras eigene
-Analoguhr, oder in Ziffern. Über jeder Uhr steht der Name des Orts, darunter, wie weit er von der Zeit des Bildschirms
+Analoguhr (klassisch mit Strichen und Ziffern, oder ruhig), oder in Ziffern. Über jeder Uhr steht der Name des Orts, darunter, wie weit er von der Zeit des Bildschirms
 entfernt ist („-6 h“, „Morgen · +8 h“). Der Bildschirm rechnet die Zeit selbst aus, Sommerzeit eingeschlossen: keine
 Entität, kein Internetdienst.
 
@@ -16,7 +16,8 @@ wo sie die Uhr nichts kostet, sonst steht die Abweichung hinter dem Namen des Or
    Breite hat jeder Ort Platz für sein Zifferblatt.
 3. Wähle im Inspector die drei Orte. **Hier** ist die Zeitzone des Bildschirms, **Keiner** lässt einen Ort weg. Gib
    einem Ort bei Bedarf einen eigenen Namen, etwa deine Stadt für **Hier**.
-4. Wähle **Zifferblätter** oder **Ziffern** und ob die Zifferblätter einen Sekundenzeiger haben.
+4. Wähle die Darstellung: **Zifferblätter, nach Größe** (ruhige bei kleinen Uhren, klassische bei großen), **Klassisch**,
+   **Ruhig** oder **Ziffern**, und ob die Zifferblätter einen Sekundenzeiger haben.
 
 ## Gut zu wissen
 

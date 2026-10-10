@@ -92,7 +92,10 @@ class ClocksTile : public tessera::Tile {
   void create(const tessera::TileContext &c) override {
     width_ = c.width;
     height_ = c.height;
-    analog_ = strcmp(c.options["face"] | "analog", "digital") != 0;
+    // "analog": a dial, classic or calm by its size; "classic", "calm": that dial wherever a dial fits; "digital".
+    const std::string face = c.options["face"] | "analog";
+    analog_ = face != "digital";
+    calm_choice_ = face == "calm" ? 1 : face == "classic" ? 0 : -1;
     seconds_ = c.options["seconds"] | true;
     static const char *const ZONE_OPTIONS[MAX_CLOCKS] = {"zone_1", "zone_2", "zone_3"};
     static const char *const NAME_OPTIONS[MAX_CLOCKS] = {"name_1", "name_2", "name_3"};
@@ -134,9 +137,9 @@ class ClocksTile : public tessera::Tile {
       const int64_t wall = static_cast<int64_t>(epoch) + offset;
       const int64_t seconds = ((wall % 86400) + 86400) % 86400;
       if (analog_ && p.dial) {
-        set_hand(p, p.hour, p.hour_points, (seconds % 43200) / 43200.0f, 0.52f, 0.f);
-        set_hand(p, p.minute, p.minute_points, (seconds % 3600) / 3600.0f, 0.82f, 0.f);
-        if (p.second) set_hand(p, p.second, p.second_points, (seconds % 60) / 60.0f, 0.92f, 0.2f);
+        set_hand(p, p.hour, p.hour_points, (seconds % 43200) / 43200.0f, p.hour_length, 0.f);
+        set_hand(p, p.minute, p.minute_points, (seconds % 3600) / 3600.0f, p.minute_length, 0.f);
+        if (p.second) set_hand(p, p.second, p.second_points, (seconds % 60) / 60.0f, p.second_length, 0.2f);
       } else {
         // The time as the screen writes its own (24 hours or AM/PM): its clock text of the moment whose local time
         // is this place's.
@@ -156,11 +159,15 @@ class ClocksTile : public tessera::Tile {
       ui::set_color(p.name_label, theme::MUTED);
       if (p.time) ui::set_color(p.time, theme::INK);
       if (p.offset) ui::set_color(p.offset, theme::MUTED);
+      // The calm dial is Tessera's turned round: a disc in the ink, its strokes and hour hand in the card's colour.
       for (lv_obj_t *mark : p.marks)
-        if (mark) lv_obj_set_style_line_color(mark, ui::color(theme::MUTED), 0);
+        if (mark) lv_obj_set_style_line_color(mark, ui::color(p.calm ? theme::CARD : theme::MUTED), 0);
       for (lv_obj_t *numeral : p.numerals)
         if (numeral) ui::set_color(numeral, theme::MUTED);
-      if (p.hour) lv_obj_set_style_line_color(p.hour, ui::color(theme::INK), 0);
+      for (lv_obj_t *dot : p.dots)
+        if (dot) lv_obj_set_style_bg_color(dot, ui::color(theme::MUTED), 0);
+      if (p.disc) lv_obj_set_style_bg_color(p.disc, ui::color(theme::INK), 0);
+      if (p.hour) lv_obj_set_style_line_color(p.hour, ui::color(p.calm ? theme::CARD : theme::INK), 0);
       if (p.minute) lv_obj_set_style_line_color(p.minute, ui::color(theme::ACCENT), 0);
       if (p.second) lv_obj_set_style_line_color(p.second, theme::rgb(theme::foreground(theme::ha::ALARM)), 0);
       if (p.dot) lv_obj_set_style_bg_color(p.dot, ui::color(theme::ACCENT), 0);
@@ -174,9 +181,10 @@ class ClocksTile : public tessera::Tile {
     std::string name;
     lv_obj_t *name_label{}, *time{}, *offset{};
     // A dial: twelve marks (or numerals at 12, 3, 6 and 9), the hands and the centre dot.
-    bool dial = false;
+    bool dial = false, calm = false;
     int cx = 0, cy = 0, radius = 0;
-    lv_obj_t *marks[12]{}, *numerals[4]{}, *hour{}, *minute{}, *second{}, *dot{};
+    float hour_length = 0.52f, minute_length = 0.82f, second_length = 0.92f;
+    lv_obj_t *marks[12]{}, *numerals[4]{}, *dots[8]{}, *hour{}, *minute{}, *second{}, *dot{}, *disc{};
     lv_point_precise_t mark_points[12][2]{}, hour_points[2]{}, minute_points[2]{}, second_points[2]{};
   };
 
@@ -207,8 +215,10 @@ class ClocksTile : public tessera::Tile {
     set(p.name_label);
     set(p.time);
     set(p.offset);
+    set(p.disc);
     for (lv_obj_t *o : p.marks) set(o);
     for (lv_obj_t *o : p.numerals) set(o);
+    for (lv_obj_t *o : p.dots) set(o);
     set(p.hour);
     set(p.minute);
     set(p.second);
@@ -270,7 +280,12 @@ class ClocksTile : public tessera::Tile {
       lv_obj_set_pos(p.name_label, x, top);
       ui::set_text(p.name_label, p.name);
       const int clock_y = top + name_h + line_gap;
-      if (dials) make_dial(parent, p, x + column / 2, clock_y + dial / 2, dial, large);
+      if (dials) {
+        // Automatic: the calm face where a dial is small (under 18 mm), where twelve marks would crowd it.
+        const bool calm = calm_choice_ >= 0 ? calm_choice_ == 1 : dial < ui::mm(18);
+        if (calm) make_calm_dial(parent, p, x + column / 2, clock_y + dial / 2, dial);
+        else make_dial(parent, p, x + column / 2, clock_y + dial / 2, dial, large);
+      }
       else {
         p.time = ui::label(parent, face, theme::INK);
         lv_obj_set_style_text_align(p.time, LV_TEXT_ALIGN_CENTER, 0);
@@ -329,6 +344,51 @@ class ClocksTile : public tessera::Tile {
     lv_obj_set_pos(p.dot, cx - centre / 2, cy - centre / 2);
   }
 
+  // Tessera's calm dial (render_calm_dial): a filled disc, four strokes at 12, 3, 6 and 9 and a dot at every other
+  // hour, no numerals, so it reads at any size; its hands and centre grow with the dial.
+  void make_calm_dial(lv_obj_t *parent, Place &p, int cx, int cy, int dial) {
+    p.dial = p.calm = true;
+    p.cx = cx;
+    p.cy = cy;
+    const float r = dial / 2.0f - 1;
+    p.radius = static_cast<int>(r);
+    p.hour_length = 0.5f;
+    p.minute_length = 0.78f;
+    p.second_length = 0.92f * 0.9f;
+    p.disc = ui::block(parent, theme::INK);
+    lv_obj_set_style_radius(p.disc, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_size(p.disc, 2 * p.radius, 2 * p.radius);
+    lv_obj_set_pos(p.disc, cx - p.radius, cy - p.radius);
+    const float inset = std::max(2.0f, r * 0.09f), stroke = std::max(3.0f, r * 0.22f);
+    const int stroke_w = std::max(2, static_cast<int>(r * 0.08f + 0.5f)), dot = std::max(2, static_cast<int>(r * 0.075f + 0.5f));
+    int d = 0;
+    for (int i = 0; i < 12; ++i) {
+      const float a = i * PI / 6;
+      if (i % 3 == 0) {
+        p.mark_points[i][0] = {static_cast<lv_value_precise_t>(cx + (r - inset) * sinf(a)), static_cast<lv_value_precise_t>(cy - (r - inset) * cosf(a))};
+        p.mark_points[i][1] = {static_cast<lv_value_precise_t>(cx + (r - inset - stroke) * sinf(a)),
+                               static_cast<lv_value_precise_t>(cy - (r - inset - stroke) * cosf(a))};
+        p.marks[i] = line(parent, stroke_w);
+        lv_line_set_points(p.marks[i], p.mark_points[i], 2);
+      } else {
+        const float ring = r - inset - stroke * 0.3f;
+        lv_obj_t *b = ui::block(parent, theme::MUTED);
+        lv_obj_set_style_radius(b, LV_RADIUS_CIRCLE, 0);
+        lv_obj_set_size(b, dot, dot);
+        lv_obj_set_pos(b, static_cast<int>(cx + ring * sinf(a) + 0.5f) - dot / 2, static_cast<int>(cy - ring * cosf(a) + 0.5f) - dot / 2);
+        p.dots[d++] = b;
+      }
+    }
+    p.hour = line(parent, std::max(3, static_cast<int>(r * 0.16f + 0.5f)));
+    p.minute = line(parent, std::max(2, static_cast<int>(r * 0.11f + 0.5f)));
+    if (seconds_) p.second = line(parent, std::max(1, static_cast<int>(r * 0.045f + 0.5f)));
+    const int centre = std::max(5, static_cast<int>(r * 0.26f + 0.5f));
+    p.dot = ui::block(parent, theme::ACCENT);
+    lv_obj_set_style_radius(p.dot, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_size(p.dot, centre, centre);
+    lv_obj_set_pos(p.dot, cx - centre / 2, cy - centre / 2);
+  }
+
   static std::string digits_as_zero(std::string text) {
     for (char &ch : text)
       if (ch >= '1' && ch <= '9') ch = '0';
@@ -338,6 +398,7 @@ class ClocksTile : public tessera::Tile {
   const tessera::Plugin *plugin_;
   int width_ = 0, height_ = 0, count_ = 0;
   bool analog_ = true, seconds_ = true;
+  int calm_choice_ = -1;  // -1 automatic, 0 classic, 1 calm
   Place places_[MAX_CLOCKS];
   lv_obj_t *note_{};
 };

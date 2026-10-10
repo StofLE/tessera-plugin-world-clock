@@ -2,7 +2,7 @@
 # digits. The screen works each place's time out itself from the zone's rules (components/world_clock/zones.h, written
 # by tools/make_zones.py from tzdata), daylight saving included: no data, no network, no entity.
 id: world_clock
-version: 0.1.2
+version: 0.2.0
 api: "0.1"
 icon: clock-outline
 maintainer: StofLE
@@ -85,8 +85,11 @@ tiles:
       - id: face
         kind: choice
         label: face
+        hint: face_hint
         default: analog
         choices:
           - { value: analog, label: face_analog }
+          - { value: classic, label: face_classic }
+          - { value: calm, label: face_calm }
           - { value: digital, label: face_digital }
       - { id: seconds, kind: toggle, label: seconds, default: true }

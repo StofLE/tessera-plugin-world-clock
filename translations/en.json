@@ -70,7 +70,7 @@
     "name_3": "Name of the third place",
     "name_hint": "Leave it empty for the city's name.",
     "face": "Face",
-    "face_analog": "Clock faces",
+    "face_analog": "Clock faces, chosen by size",
     "face_digital": "Digits",
     "seconds": "Second hand",
     "none": "None",
@@ -120,6 +120,9 @@
     "z_asia_tokyo": "Tokyo",
     "z_australia_perth": "Perth",
     "z_australia_sydney": "Sydney",
-    "z_pacific_auckland": "Auckland"
+    "z_pacific_auckland": "Auckland",
+    "face_classic": "Classic clock faces",
+    "face_calm": "Calm clock faces",
+    "face_hint": "Chosen by size: calm faces on small dials, classic ones with marks and numerals on large ones."
   }
 }

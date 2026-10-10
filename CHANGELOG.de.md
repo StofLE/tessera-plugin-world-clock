@@ -1,5 +1,9 @@
 # Änderungen
 
+## 0.2.0 - 2026-10-10
+- Ruhige Zifferblätter wie Tesseras eigene: eine gefüllte Scheibe mit vier Strichen und acht Punkten, bei jeder Größe lesbar.
+- Das Zifferblatt richtet sich standardmäßig nach der Größe (ruhig bei kleinen Uhren, klassisch bei großen), oder immer Klassisch, Ruhig oder Ziffern.
+
 ## 0.1.2 - 2026-10-09
 - Zifferblätter auch auf Tiles, die eine Zeile hoch sind: die Abweichung steht dann hinter dem Namen des Orts (New York  -6 h).
 
