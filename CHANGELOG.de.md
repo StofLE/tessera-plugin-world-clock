@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.1 - 2026-10-11
+- Ruhige Zifferblätter auch auf niedrigen Tiles, ab 6 mm, wie Tesseras eigene ruhige Uhr auf einer Karte mit einer Zeile: Ein 3x1-Tile auf einem 4-Zoll-Bildschirm zeigt wieder Zifferblätter. Ein Tile mit Klassisch oder Ruhig behält dieses Zifferblatt, wo immer eines Platz hat.
+
 ## 0.3.0 - 2026-10-11
 - Standardmäßig ein Sekundenzeiger, an der Heimatuhr (der Uhr mit der Zeit des Bildschirms, oder der ersten, wenn keine sie zeigt): Die Sekunden sind in jeder Zone gleich, und drei Zeiger im Gleichschritt wirkten hektisch. **Sekundenzeiger** wählt die Heimatuhr, alle Uhren oder keinen; ein Tile mit ausgeschaltetem Sekundenzeiger behält keinen.
 

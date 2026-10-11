@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.1 - 2026-10-11
+- Calm clock faces on low tiles too, from 6 mm, as Tessera's own calm clock on a card one row high: a 3x1 tile on a 4-inch screen shows dials again. A tile set to Classic or Calm keeps that face wherever a dial fits.
+
 ## 0.3.0 - 2026-10-11
 - One second hand by default, on the home clock (the clock of the screen's own time, or the first one when none shows it): the seconds are the same in every zone, and three hands in step looked hectic. **Second hand** chooses the home clock, every clock or none; a tile that had the second hand switched off keeps none.
 

@@ -257,8 +257,9 @@ class ClocksTile : public tessera::Tile {
     const int name_h = ui::line_height(Font::BODY), line_gap = ui::px(large ? 6 : 3);
     // The offset line stays where the clock keeps its size without it, as the departures plugin keeps its later times.
     const int room_with = height_ - 2 * (name_h + line_gap), room_without = height_ - name_h - line_gap;
-    // A dial where it has 10 mm without the offset line; the offset then follows the place's name instead.
-    const bool dials = analog_ && std::min(column, room_without) >= ui::mm(10);
+    // A dial where it has room without the offset line; the offset then follows the place's name instead. A calm face
+    // reads at any size, as Tessera's own on a card one row high: 6 mm.
+    const bool dials = analog_ && std::min(column, room_without) >= ui::mm(6);
     Font face = Font::BODY;
     bool with_offset = true;
     if (dials) {
@@ -289,7 +290,8 @@ class ClocksTile : public tessera::Tile {
       ui::set_text(p.name_label, p.name);
       const int clock_y = top + name_h + line_gap;
       if (dials) {
-        // Automatic: the calm face where a dial is small (under 18 mm), where twelve marks would crowd it.
+        // Automatic: the calm face where a dial is small (under 18 mm), where twelve marks would crowd it. Classic or
+        // calm, chosen by the person, wherever a dial fits.
         const bool calm = calm_choice_ >= 0 ? calm_choice_ == 1 : dial < ui::mm(18);
         if (calm) make_calm_dial(parent, p, x + column / 2, clock_y + dial / 2, dial);
         else make_dial(parent, p, x + column / 2, clock_y + dial / 2, dial, large);
