@@ -1,0 +1,18 @@
+# What tools/preview.py of the tessera-plugins repository shows (its docs/PREVIEW.md): three places at every size, each
+# face, and the second hand on every clock. Never put a secret here.
+tiles:
+  - tile: clocks
+    name: World clock
+    options: { zone_1: America/New_York, zone_2: local, zone_3: Asia/Tokyo }
+  - tile: clocks
+    name: Classic
+    options: { zone_1: America/New_York, zone_2: local, zone_3: Europe/London, face: classic }
+    sizes: [2x1, 3x2]
+  - tile: clocks
+    name: Calm, every second hand
+    options: { zone_1: America/Los_Angeles, zone_2: local, zone_3: Australia/Sydney, face: calm, second_hand: all }
+    sizes: [2x1, 3x2]
+  - tile: clocks
+    name: Digits
+    options: { zone_1: America/New_York, zone_2: local, face: digital }
+    sizes: [2x1]

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.2 - 2026-10-11
+- Where "Tomorrow · +7 h" does not fit after a place's name or under its clock, it says "+7 h" instead of being cut with dots.
+
 ## 0.3.1 - 2026-10-11
 - Calm clock faces on low tiles too, from 6 mm, as Tessera's own calm clock on a card one row high: a 3x1 tile on a 4-inch screen shows dials again. A tile set to Classic or Calm keeps that face wherever a dial fits.
 

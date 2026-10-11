@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.2 - 2026-10-11
+- Wo „Morgen · +7 h“ nicht hinter den Namen eines Orts oder unter seine Uhr passt, steht „+7 h“, statt mit Punkten abgeschnitten zu werden.
+
 ## 0.3.1 - 2026-10-11
 - Ruhige Zifferblätter auch auf niedrigen Tiles, ab 6 mm, wie Tesseras eigene ruhige Uhr auf einer Karte mit einer Zeile: Ein 3x1-Tile auf einem 4-Zoll-Bildschirm zeigt wieder Zifferblätter. Ein Tile mit Klassisch oder Ruhig behält dieses Zifferblatt, wo immer eines Platz hat.
 

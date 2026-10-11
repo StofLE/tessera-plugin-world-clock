@@ -153,10 +153,14 @@ class ClocksTile : public tessera::Tile {
         // is this place's.
         ui::set_text(p.time, tessera::clock_text(static_cast<uint32_t>(static_cast<int64_t>(epoch) + offset - here)));
       }
-      const std::string away = offset_text(epoch, offset, here, static_cast<int32_t>(wall / 86400) - today);
-      if (p.offset) ui::set_text(p.offset, away);
+      // The day word only where it fits: "Tomorrow · +7 h", else "+7 h", rather than cut with dots.
+      const int32_t days = static_cast<int32_t>(wall / 86400) - today;
+      const std::string away = offset_text(epoch, offset, here, days), hours = offset_text(epoch, offset, here, 0);
+      if (p.offset) ui::set_text(p.offset, ui::text_width(away, Font::BODY) <= column_ ? away : hours);
       // No line for it: the offset after the name, as the departures plugin writes a delay after where a bus goes.
-      else ui::set_text(p.name_label, offset == here ? p.name : p.name + "  " + away);
+      else if (offset == here) ui::set_text(p.name_label, p.name);
+      else ui::set_text(p.name_label, ui::text_width(p.name + "  " + away, Font::BODY) <= column_ ? p.name + "  " + away
+                                                                                                  : p.name + "  " + hours);
     }
   }
 
@@ -254,6 +258,7 @@ class ClocksTile : public tessera::Tile {
     const bool large = ui::large();
     const int gap = ui::px(large ? 16 : 8);
     const int column = (width_ - (count_ - 1) * gap) / count_;
+    column_ = column;
     const int name_h = ui::line_height(Font::BODY), line_gap = ui::px(large ? 6 : 3);
     // The offset line stays where the clock keeps its size without it, as the departures plugin keeps its later times.
     const int room_with = height_ - 2 * (name_h + line_gap), room_without = height_ - name_h - line_gap;
@@ -409,6 +414,7 @@ class ClocksTile : public tessera::Tile {
   int width_ = 0, height_ = 0, count_ = 0;
   bool analog_ = true, seconds_ = true;
   bool every_second_hand_ = false;
+  int column_ = 0;  // the width of one place
   int home_ = 0;  // the clock with the second hand, unless every clock has one
   int calm_choice_ = -1;  // -1 automatic, 0 classic, 1 calm
   Place places_[MAX_CLOCKS];
