@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.1 - 2026-10-11
+- Builds with Tessera 0.4.87 and newer: the plugin now names plugin API 0.4, which those screens ask for. Nothing else changes.
+
 ## 0.2.0 - 2026-10-10
 - Calm clock faces, as Tessera's own: a filled disc with four strokes and eight dots that reads at any size.
 - Face chosen by size by default (calm on small dials, classic on large ones), or always Classic, Calm or Digits.

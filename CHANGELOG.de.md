@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.2.1 - 2026-10-11
+- Baut mit Tessera 0.4.87 und neuer: Das Plugin nennt jetzt die Plugin-API 0.4, die diese Bildschirme verlangen. Sonst ändert sich nichts.
+
 ## 0.2.0 - 2026-10-10
 - Ruhige Zifferblätter wie Tesseras eigene: eine gefüllte Scheibe mit vier Strichen und acht Punkten, bei jeder Größe lesbar.
 - Das Zifferblatt richtet sich standardmäßig nach der Größe (ruhig bei kleinen Uhren, klassisch bei großen), oder immer Klassisch, Ruhig oder Ziffern.
