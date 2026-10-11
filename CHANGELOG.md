@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.0 - 2026-10-11
+- One second hand by default, on the home clock (the clock of the screen's own time, or the first one when none shows it): the seconds are the same in every zone, and three hands in step looked hectic. **Second hand** chooses the home clock, every clock or none; a tile that had the second hand switched off keeps none.
+
 ## 0.2.1 - 2026-10-11
 - Builds with Tessera 0.4.87 and newer: the plugin now names plugin API 0.4, which those screens ask for. Nothing else changes.
 

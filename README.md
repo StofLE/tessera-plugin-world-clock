@@ -16,13 +16,14 @@ AM/PM format.
 3. In the inspector, choose the three places. **Here** is the screen's own time zone, **None** leaves a place out.
    Give a place a name of your own if you like, such as the city you live in for **Here**.
 4. Choose the face: **Clock faces, chosen by size** (calm faces on small dials, classic ones on large), **Classic**,
-   **Calm** or **Digits**, and whether the dials have a second hand.
+   **Calm** or **Digits**, and where the second hand goes: on the home clock, on every clock or nowhere.
 
 ## Good to know
 
 - 46 places to choose from, every continent's large cities. A place follows its own daylight saving rules, north and
   south of the equator.
-- The second hand moves once a second while the tile is on the glass.
+- By default one second hand, on the home clock: the clock of the screen's own time, or the first clock when none
+  shows it. The seconds are the same in every zone. It moves once a second while the tile is on the glass.
 - The screen needs its time from Home Assistant; until then the tile says it is waiting for it.
 
 ## How it works

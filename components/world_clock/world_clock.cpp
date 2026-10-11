@@ -96,7 +96,10 @@ class ClocksTile : public tessera::Tile {
     const std::string face = c.options["face"] | "analog";
     analog_ = face != "digital";
     calm_choice_ = face == "calm" ? 1 : face == "classic" ? 0 : -1;
-    seconds_ = c.options["seconds"] | true;
+    // "home" (one hand, on the home clock), "all" or "none"; before 0.3.0 a toggle `seconds` gave every clock one.
+    const std::string hand = c.options["second_hand"] | ((c.options["seconds"] | true) ? "home" : "none");
+    seconds_ = hand != "none";
+    every_second_hand_ = hand == "all";
     static const char *const ZONE_OPTIONS[MAX_CLOCKS] = {"zone_1", "zone_2", "zone_3"};
     static const char *const NAME_OPTIONS[MAX_CLOCKS] = {"name_1", "name_2", "name_3"};
     for (int i = 0; i < MAX_CLOCKS; ++i) {
@@ -110,6 +113,11 @@ class ClocksTile : public tessera::Tile {
       if (p.name.empty()) p.name = plugin_->text(name_key(id).c_str());
       ++count_;
     }
+    // One second hand is enough, as the seconds are the same in every zone: the clock of the screen's own time, or
+    // the first one when none shows it. Three hands in step look hectic.
+    home_ = 0;
+    for (int i = 0; i < count_; ++i)
+      if (places_[i].local) { home_ = i; break; }
     note_ = ui::label(c.parent, Font::BODY, theme::MUTED);
     lv_obj_set_style_text_align(note_, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_set_size(note_, width_, ui::line_height(Font::BODY));
@@ -336,7 +344,7 @@ class ClocksTile : public tessera::Tile {
     }
     p.hour = line(parent, ui::px(large ? 5 : 3));
     p.minute = line(parent, ui::px(large ? 3 : 2));
-    if (seconds_) p.second = line(parent, ui::px(large ? 2 : 1));
+    if (seconds_ && (every_second_hand_ || &p == &places_[home_])) p.second = line(parent, ui::px(large ? 2 : 1));
     const int centre = ui::px(large ? 8 : 4);
     p.dot = ui::block(parent, theme::ACCENT);
     lv_obj_set_style_radius(p.dot, LV_RADIUS_CIRCLE, 0);
@@ -381,7 +389,7 @@ class ClocksTile : public tessera::Tile {
     }
     p.hour = line(parent, std::max(3, static_cast<int>(r * 0.16f + 0.5f)));
     p.minute = line(parent, std::max(2, static_cast<int>(r * 0.11f + 0.5f)));
-    if (seconds_) p.second = line(parent, std::max(1, static_cast<int>(r * 0.045f + 0.5f)));
+    if (seconds_ && (every_second_hand_ || &p == &places_[home_])) p.second = line(parent, std::max(1, static_cast<int>(r * 0.045f + 0.5f)));
     const int centre = std::max(5, static_cast<int>(r * 0.26f + 0.5f));
     p.dot = ui::block(parent, theme::ACCENT);
     lv_obj_set_style_radius(p.dot, LV_RADIUS_CIRCLE, 0);
@@ -398,6 +406,8 @@ class ClocksTile : public tessera::Tile {
   const tessera::Plugin *plugin_;
   int width_ = 0, height_ = 0, count_ = 0;
   bool analog_ = true, seconds_ = true;
+  bool every_second_hand_ = false;
+  int home_ = 0;  // the clock with the second hand, unless every clock has one
   int calm_choice_ = -1;  // -1 automatic, 0 classic, 1 calm
   Place places_[MAX_CLOCKS];
   lv_obj_t *note_{};

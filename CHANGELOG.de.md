@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.0 - 2026-10-11
+- Standardmäßig ein Sekundenzeiger, an der Heimatuhr (der Uhr mit der Zeit des Bildschirms, oder der ersten, wenn keine sie zeigt): Die Sekunden sind in jeder Zone gleich, und drei Zeiger im Gleichschritt wirkten hektisch. **Sekundenzeiger** wählt die Heimatuhr, alle Uhren oder keinen; ein Tile mit ausgeschaltetem Sekundenzeiger behält keinen.
+
 ## 0.2.1 - 2026-10-11
 - Baut mit Tessera 0.4.87 und neuer: Das Plugin nennt jetzt die Plugin-API 0.4, die diese Bildschirme verlangen. Sonst ändert sich nichts.
 

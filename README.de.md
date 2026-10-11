@@ -17,13 +17,15 @@ wo sie die Uhr nichts kostet, sonst steht die Abweichung hinter dem Namen des Or
 3. Wähle im Inspector die drei Orte. **Hier** ist die Zeitzone des Bildschirms, **Keiner** lässt einen Ort weg. Gib
    einem Ort bei Bedarf einen eigenen Namen, etwa deine Stadt für **Hier**.
 4. Wähle die Darstellung: **Zifferblätter, nach Größe** (ruhige bei kleinen Uhren, klassische bei großen), **Klassisch**,
-   **Ruhig** oder **Ziffern**, und ob die Zifferblätter einen Sekundenzeiger haben.
+   **Ruhig** oder **Ziffern**, und wo der Sekundenzeiger sitzt: an der Heimatuhr, an allen Uhren oder nirgends.
 
 ## Gut zu wissen
 
 - 46 Orte zur Auswahl, die großen Städte aller Kontinente. Jeder Ort folgt seinen eigenen Sommerzeit-Regeln, nördlich
   und südlich des Äquators.
-- Der Sekundenzeiger bewegt sich einmal pro Sekunde, solange das Tile auf dem Glas ist.
+- Standardmäßig ein Sekundenzeiger, an der Heimatuhr: der Uhr mit der Zeit des Bildschirms, oder der ersten Uhr, wenn
+  keine sie zeigt. Die Sekunden sind in jeder Zone gleich. Er bewegt sich einmal pro Sekunde, solange das Tile auf dem
+  Glas ist.
 - Der Bildschirm braucht seine Uhrzeit von Home Assistant; bis dahin sagt das Tile, dass es darauf wartet.
 
 ## So funktioniert es
