@@ -2,12 +2,12 @@
 # digits. The screen works each place's time out itself from the zone's rules (components/world_clock/zones.h, written
 # by tools/make_zones.py from tzdata), daylight saving included: no data, no network, no entity.
 id: world_clock
-version: 0.3.2
+version: 0.3.3
 api: "0.4"
 icon: clock-outline
 maintainer: StofLE
 license: MIT
-stage: beta
+stage: stable
 topics: [time]
 requires:
   esphome: 2026.6.2

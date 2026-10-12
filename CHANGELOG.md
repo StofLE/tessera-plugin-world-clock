@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.3 - 2026-10-12
+- A picture on the Plugins page, and marked stable: it has run every day on several screens.
+
 ## 0.3.2 - 2026-10-11
 - Where "Tomorrow · +7 h" does not fit after a place's name or under its clock, it says "+7 h" instead of being cut with dots.
 

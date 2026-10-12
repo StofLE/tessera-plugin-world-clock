@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.3 - 2026-10-12
+- Ein Bild auf der Plugins-Seite, und als stabil markiert: Sie läuft seit Tagen auf mehreren Bildschirmen.
+
 ## 0.3.2 - 2026-10-11
 - Wo „Morgen · +7 h“ nicht hinter den Namen eines Orts oder unter seine Uhr passt, steht „+7 h“, statt mit Punkten abgeschnitten zu werden.
 
