@@ -54,7 +54,8 @@
     "z_asia_tokyo": "Tokyo",
     "z_australia_perth": "Perth",
     "z_australia_sydney": "Sydney",
-    "z_pacific_auckland": "Auckland"
+    "z_pacific_auckland": "Auckland",
+    "setting_digits": "Digits instead of dials"
   },
   "app": {
     "name": "World clock",
@@ -127,6 +128,8 @@
     "z_pacific_auckland": "Auckland",
     "face_classic": "Classic clock faces",
     "face_calm": "Calm clock faces",
-    "face_hint": "Chosen by size: calm faces on small dials, classic ones with marks and numerals on large ones."
+    "face_hint": "Chosen by size: calm faces on small dials, classic ones with marks and numerals on large ones.",
+    "setting_digits": "Digits instead of dials",
+    "setting_digits_hint": "Every world clock of the screen shows digits instead of dials. A tap on a clock turns it too."
   }
 }

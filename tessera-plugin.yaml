@@ -2,7 +2,7 @@
 # digits. The screen works each place's time out itself from the zone's rules (components/world_clock/zones.h, written
 # by tools/make_zones.py from tzdata), daylight saving included: no data, no network, no entity.
 id: world_clock
-version: 0.3.3
+version: 0.4.0
 api: "0.4"
 icon: clock-outline
 maintainer: StofLE
@@ -20,7 +20,7 @@ tiles:
     icon: clock-outline
     sizes: { min: 1x1, max: 4x2 }
     # Three dials of twelve marks, three hands and a centre dot each, and three names, times and offsets.
-    memory: 6400
+    memory: 6700
     example: tile_example
     options:
       - id: zone_1
@@ -101,3 +101,7 @@ tiles:
           - { value: home, label: second_hand_home }
           - { value: all, label: second_hand_all }
           - { value: none, label: second_hand_none }
+
+# The switch of plugin.yaml: digits instead of dials on every clock of the screen; a tap on a clock turns it too.
+settings:
+  - { key: world_clock_digits, label: setting_digits, hint: setting_digits_hint }

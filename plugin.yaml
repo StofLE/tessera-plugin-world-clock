@@ -1,3 +1,16 @@
 # What a screen gets when it takes this plugin. Tessera includes this file from the screen's <name>.plugins.yaml and
 # adds this plugin's components/ folder as an ESPHome external component.
+
+# Digits instead of dials on every world clock of the screen: a tap on a clock turns it over, and it stays so through a
+# restart. Home Assistant sees it as a switch of the screen (digits at night, say), and the screen's settings page has it.
+switch:
+  - platform: template
+    id: world_clock_digits
+    name: "World clock digits"
+    icon: mdi:clock-digital
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    entity_category: config
+
 world_clock:
+  digits: world_clock_digits

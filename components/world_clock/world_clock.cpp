@@ -87,7 +87,7 @@ static std::string name_key(const std::string &id) {
 
 class ClocksTile : public tessera::Tile {
  public:
-  explicit ClocksTile(const tessera::Plugin *plugin) : plugin_(plugin) {}
+  explicit ClocksTile(const WorldClock *plugin) : plugin_(plugin) {}
 
   void create(const tessera::TileContext &c) override {
     width_ = c.width;
@@ -127,36 +127,50 @@ class ClocksTile : public tessera::Tile {
     lay_out(c.parent);
   }
 
+  // A tap turns every clock of the screen over, dials to digits and back (the switch of plugin.yaml); a tile without
+  // dials has nothing to turn.
+  void on_tap() override {
+    if (!dials_) return;
+    plugin_->turn_over();
+    follow_switch();
+  }
+
   void on_tick(uint32_t epoch) override {
     if (!count_) return;
+    follow_switch();  // Home Assistant or the settings page may have turned it
     if (!epoch) {
-      for (int i = 0; i < count_; ++i) show(places_[i], false);
+      visible_ = false;
+      for (int i = 0; i < count_; ++i) show(places_[i]);
       ui::set_text(note_, plugin_->text("waiting"));
       lv_obj_remove_flag(note_, LV_OBJ_FLAG_HIDDEN);
       return;
     }
     lv_obj_add_flag(note_, LV_OBJ_FLAG_HIDDEN);
+    visible_ = true;
+    const Mode &mode = dial_now_ ? dial_mode_ : digit_mode_;
     const int32_t here = local_offset(epoch);
     const int32_t today = static_cast<int32_t>((static_cast<int64_t>(epoch) + here) / 86400);
     for (int i = 0; i < count_; ++i) {
       Place &p = places_[i];
-      show(p, true);
+      show(p);
       const int32_t offset = p.local ? here : offset_at(*p.zone, epoch);
       const int64_t wall = static_cast<int64_t>(epoch) + offset;
       const int64_t seconds = ((wall % 86400) + 86400) % 86400;
-      if (analog_ && p.dial) {
+      if (dial_now_ && p.dial) {
         set_hand(p, p.hour, p.hour_points, (seconds % 43200) / 43200.0f, p.hour_length, 0.f);
         set_hand(p, p.minute, p.minute_points, (seconds % 3600) / 3600.0f, p.minute_length, 0.f);
         if (p.second) set_hand(p, p.second, p.second_points, (seconds % 60) / 60.0f, p.second_length, 0.2f);
-      } else {
-        // The time as the screen writes its own (24 hours or AM/PM): its clock text of the moment whose local time
-        // is this place's.
-        ui::set_text(p.time, tessera::clock_text(static_cast<uint32_t>(static_cast<int64_t>(epoch) + offset - here)));
       }
+      // The time as the screen writes its own (24 hours or AM/PM): its clock text of the moment whose local time is
+      // this place's. Kept also under a dial, so a tap that turns it over finds the time there.
+      ui::set_text(p.time, tessera::clock_text(static_cast<uint32_t>(static_cast<int64_t>(epoch) + offset - here)));
       // The day word only where it fits: "Tomorrow · +7 h", else "+7 h", rather than cut with dots.
       const int32_t days = static_cast<int32_t>(wall / 86400) - today;
       const std::string away = offset_text(epoch, offset, here, days), hours = offset_text(epoch, offset, here, 0);
-      if (p.offset) ui::set_text(p.offset, ui::text_width(away, Font::BODY) <= column_ ? away : hours);
+      if (p.offset && mode.with_offset) {
+        ui::set_text(p.offset, ui::text_width(away, Font::BODY) <= column_ ? away : hours);
+        ui::set_text(p.name_label, p.name);
+      }
       // No line for it: the offset after the name, as the departures plugin writes a delay after where a bus goes.
       else if (offset == here) ui::set_text(p.name_label, p.name);
       else ui::set_text(p.name_label, ui::text_width(p.name + "  " + away, Font::BODY) <= column_ ? p.name + "  " + away
@@ -191,6 +205,7 @@ class ClocksTile : public tessera::Tile {
     bool local = false;
     const Zone *zone = nullptr;
     std::string name;
+    int x = 0;  // its column's left
     lv_obj_t *name_label{}, *time{}, *offset{};
     // A dial: twelve marks (or numerals at 12, 3, 6 and 9), the hands and the centre dot.
     bool dial = false, calm = false;
@@ -218,23 +233,27 @@ class ClocksTile : public tessera::Tile {
     return text;
   }
 
-  static void show(Place &p, bool shown) {
-    auto set = [shown](lv_obj_t *o) {
+  // A place's objects shown as the tile is now: nothing while it waits for the time, else its name, its dial or its
+  // digits, and its offset line where the mode has one.
+  void show(Place &p) {
+    const bool offset_line = (dial_now_ ? dial_mode_ : digit_mode_).with_offset;
+    auto set = [](lv_obj_t *o, bool shown) {
       if (!o) return;
       if (shown) lv_obj_remove_flag(o, LV_OBJ_FLAG_HIDDEN);
       else lv_obj_add_flag(o, LV_OBJ_FLAG_HIDDEN);
     };
-    set(p.name_label);
-    set(p.time);
-    set(p.offset);
-    set(p.disc);
-    for (lv_obj_t *o : p.marks) set(o);
-    for (lv_obj_t *o : p.numerals) set(o);
-    for (lv_obj_t *o : p.dots) set(o);
-    set(p.hour);
-    set(p.minute);
-    set(p.second);
-    set(p.dot);
+    const bool dial = visible_ && dial_now_;
+    set(p.name_label, visible_);
+    set(p.time, visible_ && !dial_now_);
+    set(p.offset, visible_ && offset_line);
+    set(p.disc, dial);
+    for (lv_obj_t *o : p.marks) set(o, dial);
+    for (lv_obj_t *o : p.numerals) set(o, dial);
+    for (lv_obj_t *o : p.dots) set(o, dial);
+    set(p.hour, dial);
+    set(p.minute, dial);
+    set(p.second, dial);
+    set(p.dot, dial);
   }
 
   lv_obj_t *line(lv_obj_t *parent, int width) {
@@ -253,69 +272,95 @@ class ClocksTile : public tessera::Tile {
     lv_line_set_points(hand, points, 2);
   }
 
-  // The columns, made once: a tile's size and options never change while it lives.
+  // The columns, made once: a tile's size and options never change while it lives. Each place has its digits, and
+  // where the face asks for dials and a column has room, its dial too: a tap shows the one or the other.
   void lay_out(lv_obj_t *parent) {
     const bool large = ui::large();
     const int gap = ui::px(large ? 16 : 8);
     const int column = (width_ - (count_ - 1) * gap) / count_;
     column_ = column;
-    const int name_h = ui::line_height(Font::BODY), line_gap = ui::px(large ? 6 : 3);
+    name_h_ = ui::line_height(Font::BODY);
+    line_gap_ = ui::px(large ? 6 : 3);
     // The offset line stays where the clock keeps its size without it, as the departures plugin keeps its later times.
-    const int room_with = height_ - 2 * (name_h + line_gap), room_without = height_ - name_h - line_gap;
+    const int room_with = height_ - 2 * (name_h_ + line_gap_), room_without = height_ - name_h_ - line_gap_;
+    // The largest digits for the shape of a time ("00:00", "00:00 AM") that fit a column.
+    const std::string shape = digits_as_zero(tessera::clock_text(tessera::epoch() ? tessera::epoch() : 43200));
+    auto fitting = [&](int room) {
+      for (Font f : {Font::VALUE, Font::HEADLINE, Font::TITLE, Font::BODY_LARGE})
+        if (ui::text_width(shape, f) <= column && ui::line_height(f) <= room) return f;
+      return Font::BODY;
+    };
+    const Font face = fitting(room_with);
+    digit_mode_.with_offset = face == fitting(room_without);
+    digit_mode_.clock_h = ui::line_height(face);
+    stand(digit_mode_);
     // A dial where it has room without the offset line; the offset then follows the place's name instead. A calm face
     // reads at any size, as Tessera's own on a card one row high: 6 mm.
-    const bool dials = analog_ && std::min(column, room_without) >= ui::mm(6);
-    Font face = Font::BODY;
-    bool with_offset = true;
-    if (dials) {
-      with_offset = std::min(column, room_with) >= std::min(column, room_without);
-    } else {
-      // The largest digits for the shape of a time ("00:00", "00:00 AM") that fit a column.
-      const std::string shape = digits_as_zero(tessera::clock_text(tessera::epoch() ? tessera::epoch() : 43200));
-      auto fitting = [&](int room) {
-        for (Font f : {Font::VALUE, Font::HEADLINE, Font::TITLE, Font::BODY_LARGE})
-          if (ui::text_width(shape, f) <= column && ui::line_height(f) <= room) return f;
-        return Font::BODY;
-      };
-      face = fitting(room_with);
-      with_offset = face == fitting(room_without);
+    dials_ = analog_ && std::min(column, room_without) >= ui::mm(6);
+    int dial = 0;
+    if (dials_) {
+      dial_mode_.with_offset = std::min(column, room_with) >= std::min(column, room_without);
+      dial = std::min(column, dial_mode_.with_offset ? room_with : room_without);
+      dial_mode_.clock_h = dial;
+      stand(dial_mode_);
     }
-    const int clock_room = with_offset ? room_with : room_without;
-    const int dial = dials ? std::min(column, clock_room) : 0;
-    const int clock_h = dials ? dial : ui::line_height(face);
-    const int block = name_h + line_gap + clock_h + (with_offset ? line_gap + name_h : 0);
-    const int top = std::max(0, (height_ - block) / 2);
+    const bool offsets = digit_mode_.with_offset || (dials_ && dial_mode_.with_offset);
     for (int i = 0; i < count_; ++i) {
       Place &p = places_[i];
-      const int x = i * (column + gap);
+      p.x = i * (column + gap);
       p.name_label = ui::label(parent, Font::BODY, theme::MUTED);
       lv_obj_set_style_text_align(p.name_label, LV_TEXT_ALIGN_CENTER, 0);
-      lv_obj_set_size(p.name_label, column, name_h);
-      lv_obj_set_pos(p.name_label, x, top);
+      lv_obj_set_size(p.name_label, column, name_h_);
       ui::set_text(p.name_label, p.name);
-      const int clock_y = top + name_h + line_gap;
-      if (dials) {
+      p.time = ui::label(parent, face, theme::INK);
+      lv_obj_set_style_text_align(p.time, LV_TEXT_ALIGN_CENTER, 0);
+      lv_obj_set_size(p.time, column, digit_mode_.clock_h);
+      lv_obj_set_pos(p.time, p.x, digit_mode_.clock_y);
+      if (dials_) {
         // Automatic: the calm face where a dial is small (under 18 mm), where twelve marks would crowd it. Classic or
         // calm, chosen by the person, wherever a dial fits.
         const bool calm = calm_choice_ >= 0 ? calm_choice_ == 1 : dial < ui::mm(18);
-        if (calm) make_calm_dial(parent, p, x + column / 2, clock_y + dial / 2, dial);
-        else make_dial(parent, p, x + column / 2, clock_y + dial / 2, dial, large);
+        const int cx = p.x + column / 2, cy = dial_mode_.clock_y + dial / 2;
+        if (calm) make_calm_dial(parent, p, cx, cy, dial);
+        else make_dial(parent, p, cx, cy, dial, large);
       }
-      else {
-        p.time = ui::label(parent, face, theme::INK);
-        lv_obj_set_style_text_align(p.time, LV_TEXT_ALIGN_CENTER, 0);
-        lv_obj_set_size(p.time, column, clock_h);
-        lv_obj_set_pos(p.time, x, clock_y);
-      }
-      if (with_offset) {
+      if (offsets) {
         p.offset = ui::label(parent, Font::BODY, theme::MUTED);
         lv_obj_set_style_text_align(p.offset, LV_TEXT_ALIGN_CENTER, 0);
-        lv_obj_set_size(p.offset, column, name_h);
-        lv_obj_set_pos(p.offset, x, clock_y + clock_h + line_gap);
+        lv_obj_set_size(p.offset, column, name_h_);
       }
-      show(p, false);
     }
+    dial_now_ = dials_ && !plugin_->digits();
+    apply();
     on_theme();
+  }
+
+  // A way of showing a place, dial or digits: where its name, clock and offset line stand, centred in the tile.
+  struct Mode {
+    bool with_offset = true;
+    int top = 0, clock_y = 0, clock_h = 0;
+  };
+  void stand(Mode &m) const {
+    const int block = name_h_ + line_gap_ + m.clock_h + (m.with_offset ? line_gap_ + name_h_ : 0);
+    m.top = std::max(0, (height_ - block) / 2);
+    m.clock_y = m.top + name_h_ + line_gap_;
+  }
+  // Dials where the tile has them and the switch does not ask for digits.
+  void follow_switch() {
+    const bool dial = dials_ && !plugin_->digits();
+    if (dial == dial_now_) return;
+    dial_now_ = dial;
+    apply();
+  }
+  // The names and offset lines where the mode has them, and which clock shows.
+  void apply() {
+    const Mode &m = dial_now_ ? dial_mode_ : digit_mode_;
+    for (int i = 0; i < count_; ++i) {
+      Place &p = places_[i];
+      lv_obj_set_pos(p.name_label, p.x, m.top);
+      if (p.offset) lv_obj_set_pos(p.offset, p.x, m.clock_y + m.clock_h + line_gap_);
+      show(p);
+    }
   }
 
   // A dial as Tessera's own analog clock has it: twelve marks, longer at the quarters, or numerals there where the
@@ -410,8 +455,13 @@ class ClocksTile : public tessera::Tile {
     return text;
   }
 
-  const tessera::Plugin *plugin_;
+  const WorldClock *plugin_;
   int width_ = 0, height_ = 0, count_ = 0;
+  int name_h_ = 0, line_gap_ = 0;
+  Mode dial_mode_, digit_mode_;
+  bool dials_ = false;     // whether the places have dials (the face asks for them and they fit)
+  bool dial_now_ = false;  // whether the dials show now, else the digits
+  bool visible_ = false;   // false while the screen waits for the time
   bool analog_ = true, seconds_ = true;
   bool every_second_hand_ = false;
   int column_ = 0;  // the width of one place
@@ -423,6 +473,15 @@ class ClocksTile : public tessera::Tile {
 
 void WorldClock::setup() {
   add_tile("clocks", [this]() { return new ClocksTile(this); });
+}
+
+// The switch on the screen's own settings page, as Tessera's plugins keep theirs.
+bool WorldClock::settings(tessera::SettingsPage &page) {
+  if (!digits_) return false;
+  page.icon = "\U000F0150";  // clock-outline, the plugin's icon
+  page.toggle(text("setting_digits"), [this]() { return digits(); },
+              [this](bool on) { if (on) digits_->turn_on(); else digits_->turn_off(); });
+  return true;
 }
 
 }  // namespace esphome::world_clock

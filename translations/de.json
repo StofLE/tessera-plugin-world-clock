@@ -54,7 +54,8 @@
     "z_asia_tokyo": "Tokio",
     "z_australia_perth": "Perth",
     "z_australia_sydney": "Sydney",
-    "z_pacific_auckland": "Auckland"
+    "z_pacific_auckland": "Auckland",
+    "setting_digits": "Ziffern statt Zifferblätter"
   },
   "app": {
     "name": "Weltzeituhr",
@@ -127,6 +128,8 @@
     "z_pacific_auckland": "Auckland",
     "face_classic": "Klassische Zifferblätter",
     "face_calm": "Ruhige Zifferblätter",
-    "face_hint": "Nach Größe: ruhige Zifferblätter bei kleinen Uhren, klassische mit Strichen und Ziffern bei großen."
+    "face_hint": "Nach Größe: ruhige Zifferblätter bei kleinen Uhren, klassische mit Strichen und Ziffern bei großen.",
+    "setting_digits": "Ziffern statt Zifferblätter",
+    "setting_digits_hint": "Jede Weltuhr des Bildschirms zeigt Ziffern statt Zifferblättern. Ein Tipp auf eine Uhr schaltet das auch um."
   }
 }
