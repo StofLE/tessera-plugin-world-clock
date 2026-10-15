@@ -3,7 +3,7 @@
 ## 0.4.0
 - A tap on a clock turns every world clock of the screen from dials to digits and back, and it stays so through a
   restart. Home Assistant sees it as a switch of the screen ("World clock digits"), to turn at night for example, and
-  the screen's settings page and the plugin's settings in the app have it too.
+  the screen's settings page (under "World clock") and the plugin's settings in the app have it too.
 
 ## 0.3.3 - 2026-10-12
 - A picture on the Plugins page, and marked stable: it has run every day on several screens.

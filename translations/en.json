@@ -55,7 +55,8 @@
     "z_australia_perth": "Perth",
     "z_australia_sydney": "Sydney",
     "z_pacific_auckland": "Auckland",
-    "setting_digits": "Digits instead of dials"
+    "setting_digits": "Digits instead of dials",
+    "name": "World clock"
   },
   "app": {
     "name": "World clock",
