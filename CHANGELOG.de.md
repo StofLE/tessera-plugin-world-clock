@@ -1,9 +1,11 @@
 # Änderungen
 
-## 0.4.0
+## 0.4.0 - 2026-10-17
 - Ein Tipp auf eine Uhr schaltet alle Weltuhren des Bildschirms von Zifferblättern auf Ziffern und zurück, und das bleibt
   auch nach einem Neustart so. Home Assistant sieht es als Schalter des Bildschirms („World clock digits“), etwa um
-  nachts umzuschalten, und die Einstellungen des Bildschirms und die Einstellungen des Plugins in der App haben ihn auch.
+  nachts umzuschalten. Den Schalter gibt es auch in den Einstellungen des Bildschirms, auf der Seite „Weltzeituhr“, und
+  in den Einstellungen des Plugins in der App. Ab Tessera 0.4.89 folgen die Einstellungen in der App einem Tipp auf dem
+  Bildschirm sofort.
 
 ## 0.3.3 - 2026-10-12
 - Ein Bild auf der Plugins-Seite, und als stabil markiert: Sie läuft seit Tagen auf mehreren Bildschirmen.
